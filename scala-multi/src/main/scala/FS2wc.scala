@@ -15,13 +15,17 @@ object FS2wc extends IOApp {
     val bytes = readFile(fn, chunkSize)
     val lines = bytes.through(text.decodeWithCharset(Charset.forName("ASCII"))).through(text.lines)
     val linesCount = lines.chunkMin(1_000).map(_.size.toLong)
-    linesCount.compile.toVector.map(_.sum)
+    for (
+      _ <- IO.println(s"start read ${fn}");
+      totalSize <- linesCount.compile.toVector.map(_.sum);
+      _ <- IO.println(s"finished read ${fn}")
+    ) yield (totalSize)
   }
 
   def wcFiles(fns: Seq[String]): IO[Seq[(String, Long)]] = {
     for (
       entries <- expandPathnames(fns);
-      sizes <- entries.traverse(entry => wcFile(Path.fromNioPath(entry)))
+      sizes <- entries.parTraverse(entry => wcFile(Path.fromNioPath(entry)))
     ) yield {
       entries.zip(sizes).map(pair => (pair._1.toString, pair._2))
     }

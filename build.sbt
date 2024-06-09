@@ -21,9 +21,13 @@ lazy val jvmDemo = project
       "co.fs2" %% "fs2-core" % "3.10.2",
       "co.fs2" %% "fs2-io" % "3.10.2",
       "org.apache.opendal" % "opendal-java" % "0.45.2"
-    )
+    ),
+    graalVMNativeImageCommand := "/usr/lib/jvm/java-11-graalvm/bin/native-image",
+//    graalVMNativeImageOptions:= Seq("FS2wc")
   )
   .enablePlugins(JavaAppPackaging)
+  .enablePlugins(GraalVMNativeImagePlugin)
+
 // this lets sbt-run handle Ctrl-C
 Global / cancelable := true
 Global / fork := true

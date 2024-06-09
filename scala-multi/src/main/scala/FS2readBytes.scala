@@ -30,13 +30,17 @@ object FS2readBytes extends IOApp {
   def sizeFile(fn: Path, chunkSize: Option[Int] = None): IO[Long] = {
     val bytes = readFile(fn, chunkSize)
     val chunkSizes = bytes.chunkMin(1024 * 1024).map(_.size.toLong)
-    chunkSizes.compile.toVector.map(_.sum)
+    for (
+      _ <- IO.println(s"start read ${fn}");
+      totalSize <- chunkSizes.compile.toVector.map(_.sum);
+      _ <- IO.println(s"finished read ${fn}")
+    ) yield (totalSize)
   }
 
   def sizeFiles(fns: Seq[String]): IO[Seq[(String, Long)]] = {
     for (
       entries <- expandPathnames(fns);
-      sizes <- entries.traverse(entry => sizeFile(Path.fromNioPath(entry)))
+      sizes <- entries.parTraverse(entry => sizeFile(Path.fromNioPath(entry)))
     ) yield {
       entries.zip(sizes).map(pair => (pair._1.toString, pair._2))
     }
