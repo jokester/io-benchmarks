@@ -31,7 +31,7 @@ def bench(paths):
     subprocess.run(bench_args)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 1:
+    if len(sys.argv) < 2:
         print("Usage: ./bench <subpath1> <subpath2> ...")
         sys.exit(1)
 
