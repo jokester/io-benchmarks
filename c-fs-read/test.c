@@ -23,7 +23,12 @@ int main() {
 
     for (;;) {
         result = fread(buffer, 1, BUFFER_SIZE, file);
-        if (result < 0) {
+        if (result <= 0)
+        {
+            if (feof(file))
+            {
+                break;
+            }
             fputs("Reading error", stderr);
             fclose(file);
             free(buffer);

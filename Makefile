@@ -5,3 +5,5 @@ venv:
 	python3 -mvenv venv
 	venv/bin/pip install opendal
 
+jvmBin:
+	sbt jvmDemo/packageXzTarball
