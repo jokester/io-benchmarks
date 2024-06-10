@@ -13,7 +13,10 @@ object FS2wc extends IOApp {
 
   def wcFile(fn: Path, chunkSize: Option[Int] = None): IO[Long] = {
     val bytes = readFile(fn, chunkSize)
-    val lines = bytes.through(text.decodeWithCharset(Charset.forName("ASCII"))).through(text.lines)
+    val lines = bytes.through(
+      text.utf8.decode,
+      //      text.decodeWithCharset(Charset.forName("ASCII"))
+    ).through(text.lines)
     val linesCount = lines.chunkMin(1_000).map(_.size.toLong)
     for (
       _ <- IO.println(s"start read ${fn}");
