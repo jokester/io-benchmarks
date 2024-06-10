@@ -21,14 +21,17 @@ def bench(paths):
     bench_args = ["hyperfine"]
 
     for path in paths:
-        exe_path = build(path)
-        bench_args.append(exe_path)
+        if path.startswith('-'):
+            bench_args.append(path)
+        else:
+            exe_path = build(path)
+            bench_args.append(exe_path)
 
     print(bench_args)
     subprocess.run(bench_args)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 1:
+    if len(sys.argv) < 2:
         print("Usage: ./bench <subpath1> <subpath2> ...")
         sys.exit(1)
 

@@ -2,3 +2,9 @@ target/
 .ruff_cache/
 **/test
 venv/
+/project/project
+.bloop
+.vscode
+.metals
+.bsp
+.idea
